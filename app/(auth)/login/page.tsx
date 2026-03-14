@@ -95,6 +95,12 @@ export default function LoginPage() {
           >
             {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</> : 'Sign In'}
           </button>
+          
+          <div className="text-center pt-2">
+            <p className="text-[11px] text-[var(--text-secondary)] italic">
+              Demo: admin@coreinventory.com / admin123 (Manager)
+            </p>
+          </div>
         </form>
 
         <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">

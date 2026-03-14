@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const validRole = role === "manager" ? "manager" : "staff";
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json(
@@ -55,7 +57,7 @@ export async function POST(req: NextRequest) {
         email,
         passwordHash,
         name,
-        role: role ?? "staff",
+        role: validRole,
       },
     });
 

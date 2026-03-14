@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState('manager');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export default function SignupPage() {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, role }),
       });
 
       const data = await res.json();
@@ -92,6 +93,21 @@ export default function SignupPage() {
               placeholder="you@company.com"
               className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
             />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="role" className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+              Account Type
+            </label>
+            <select
+              id="role"
+              value={role}
+              onChange={e => setRole(e.target.value)}
+              className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] appearance-none"
+            >
+              <option value="manager">Manager (Full Access)</option>
+              <option value="staff">Staff (View Only)</option>
+            </select>
           </div>
 
           <div className="flex flex-col gap-1.5">
