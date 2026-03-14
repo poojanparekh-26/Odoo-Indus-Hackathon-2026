@@ -113,6 +113,7 @@ const AlertsPanel = () => {
               <button 
                 onClick={() => dismissAlert(alert.id)}
                 className="absolute top-2 right-2 p-1 text-[var(--text-secondary)] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Dismiss Alert"
               >
                 <X className="w-4 h-4" />
               </button>

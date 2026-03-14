@@ -41,8 +41,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ columns, items, entityPath })
                   No items in {column}
                 </div>
               ) : (
-                columnItems.map(item => (
-                  <KanbanCard key={item.id} item={item} entityPath={entityPath} />
+                columnItems.map((item, index) => (
+                  <KanbanCard key={item.id} item={item} entityPath={entityPath} index={index} />
                 ))
               )}
             </div>

@@ -27,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
       <button 
         className="flex h-10 w-10 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] lg:hidden"
         onClick={onMenuClick}
+        aria-label="Open Menu"
       >
         <Menu className="h-6 w-6" />
       </button>
@@ -46,7 +47,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
         <GlobalSearch />
         
         <div className="flex items-center gap-3 pl-4 border-l border-[var(--border)]">
-          <button className="relative p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]">
+          <button 
+            className="relative p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
+            aria-label="Notifications"
+          >
             <Bell className="h-5 w-5" />
             <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-red-500 border-2 border-[var(--bg-primary)]" />
           </button>

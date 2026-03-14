@@ -64,7 +64,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 Invo<span className="text-[var(--brand-primary)]">Track</span>
               </span>
             </div>
-            <button className="lg:hidden text-[var(--text-secondary)]" onClick={onClose}>
+            <button 
+              className="lg:hidden text-[var(--text-secondary)]" 
+              onClick={onClose}
+              aria-label="Close Sidebar"
+            >
               <X className="h-6 w-6" />
             </button>
           </div>

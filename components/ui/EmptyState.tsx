@@ -101,3 +101,12 @@ export const EmptyDamageReportsState = () => (
     action={{ label: "Report Damage", href: "/damage-reports/new" }}
   />
 );
+
+export const EmptyDeliveriesState = () => (
+  <EmptyState 
+    icon="inbox"
+    title="No deliveries yet"
+    description="You haven't recorded any outgoing shipments. Create a delivery when fulfilling customer orders."
+    action={{ label: "Create Delivery", href: "/deliveries/new" }}
+  />
+);

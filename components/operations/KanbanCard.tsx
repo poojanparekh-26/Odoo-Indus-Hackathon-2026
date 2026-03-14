@@ -16,13 +16,15 @@ export interface KanbanItem {
 interface KanbanCardProps {
   item: KanbanItem;
   entityPath: string;
+  index: number;
 }
 
-const KanbanCard: React.FC<KanbanCardProps> = ({ item, entityPath }) => {
+const KanbanCard: React.FC<KanbanCardProps> = ({ item, entityPath, index }) => {
   return (
     <Link 
       href={`/${entityPath}/${item.id}`}
-      className="block group transition-all duration-200 hover:scale-[1.01]"
+      className="block group transition-all duration-200 hover:scale-[1.01] kanban-card"
+      style={{ animationDelay: `${index * 50}ms` }}
     >
       <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex justify-between items-start mb-3">

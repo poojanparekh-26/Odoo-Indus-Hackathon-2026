@@ -37,7 +37,7 @@ const LowStockBanner: React.FC = () => {
   if (alerts.length === 0 || isDismissed) return null;
 
   return (
-    <div className="w-full bg-amber-50 border-b border-amber-200 p-4 animate-in fade-in slide-in-from-top duration-300">
+    <div className="w-full bg-amber-50 border-b border-amber-200 p-4 low-stock-banner overflow-hidden">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-600 text-xs font-bold">
