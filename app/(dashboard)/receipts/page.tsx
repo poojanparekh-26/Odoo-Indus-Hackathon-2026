@@ -1,35 +1,55 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import ReceiptsView from '@/components/receipts/ReceiptsView';
+import { Loader2 } from 'lucide-react';
 
-async function getReceiptsData(searchParams: { [key: string]: string | string[] | undefined }) {
-  const page = searchParams.page || '1';
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-
-  // Fetch all for Kanban (or at least more than one page)
-  const allRes = await fetch(`${baseUrl}/api/receipts?perPage=100`, { cache: 'no-store' });
-  const allReceipts = await allRes.json();
-
-  // Fetch paginated for list
-  const paginatedRes = await fetch(`${baseUrl}/api/receipts?page=${page}&perPage=20`, { cache: 'no-store' });
-  const paginatedReceipts = await paginatedRes.json();
-
-  return {
-    all: allReceipts.data || [],
-    paginated: paginatedReceipts
-  };
-}
-
-export default async function ReceiptsPage({
+export default function ReceiptsPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { all, paginated } = await getReceiptsData(searchParams);
+  const page = searchParams.page || '1';
+  
+  const [allReceipts, setAllReceipts] = useState<any[]>([]);
+  const [paginatedReceipts, setPaginatedReceipts] = useState({ data: [], total: 0, page: 1, totalPages: 1 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+
+    Promise.all([
+      fetch(`/api/receipts?perPage=100`).then(r => r.ok ? r.json() : { data: [] }),
+      fetch(`/api/receipts?page=${page}&perPage=20`).then(r => r.ok ? r.json() : { data: [], total: 0, page: 1, totalPages: 1 })
+    ])
+    .then(([allRes, paginatedRes]) => {
+      if (isMounted) {
+        setAllReceipts(allRes.data || []);
+        setPaginatedReceipts(paginatedRes);
+        setLoading(false);
+      }
+    })
+    .catch(err => {
+      console.error('Failed to fetch receipts:', err);
+      if (isMounted) setLoading(false);
+    });
+
+    return () => { isMounted = false; };
+  }, [page]);
+
+  if (loading) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--brand-primary)]" />
+      </div>
+    );
+  }
 
   return (
     <ReceiptsView 
-      receipts={all}
-      paginatedReceipts={paginated}
+      receipts={allReceipts}
+      paginatedReceipts={paginatedReceipts}
     />
   );
 }

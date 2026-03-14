@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import LowStockBanner from '@/components/dashboard/LowStockBanner';
 import AlertsPanel from '@/components/dashboard/AlertsPanel';

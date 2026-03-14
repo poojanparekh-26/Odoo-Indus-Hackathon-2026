@@ -38,6 +38,9 @@
   --badge-at-risk-text: #92400e;
   --badge-ok-bg: #dcfce7;
   --badge-ok-text: #166534;
+
+  --shimmer-light: #f0f0f0;
+  --shimmer-dark: #e0e0e0;
 }
 
 [data-theme="dark"] {

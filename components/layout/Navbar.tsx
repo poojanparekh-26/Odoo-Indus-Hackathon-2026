@@ -31,7 +31,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
   if (!isMounted) return null;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center gap-4 border-b border-[var(--border)] bg-[var(--bg-primary)] px-4 md:px-6">
+    <header 
+      suppressHydrationWarning
+      className="sticky top-0 z-30 flex h-16 w-full items-center gap-4 border-b border-[var(--border)] bg-[var(--bg-primary)] px-4 md:px-6"
+    >
       <button 
         className="flex h-10 w-10 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] lg:hidden"
         onClick={onMenuClick}

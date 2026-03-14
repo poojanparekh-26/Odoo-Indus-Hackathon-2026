@@ -13,6 +13,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return <div className="flex h-screen bg-gray-100 animate-pulse" />;
+  }
 
   return (
     <div className="flex h-screen bg-[var(--bg-primary)] overflow-hidden">
