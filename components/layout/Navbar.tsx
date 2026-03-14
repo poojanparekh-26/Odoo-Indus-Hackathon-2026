@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, Bell, User, ChevronRight } from 'lucide-react';
 import GlobalSearch from '../ui/GlobalSearch';
@@ -14,6 +14,11 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Generate breadcrumbs from pathname
   const pathSegments = pathname.split('/').filter(Boolean);
@@ -22,6 +27,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
     const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
     return { href, label };
   });
+
+  if (!isMounted) return null;
 
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center gap-4 border-b border-[var(--border)] bg-[var(--bg-primary)] px-4 md:px-6">
