@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         String    @default("staff")
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Warehouse {
+  id            String         @id @default(cuid())
+  name          String
+  code          String         @unique
+  locations     Location[]
+  products      Product[]
+  damageReports DamageReport[]
+}
+
+model Location {
+  id                 String          @id @default(cuid())
+  name               String
+  code               String
+  warehouseId        String
+  warehouse          Warehouse       @relation(fields: [warehouseId], references: [id])
+  stockMovementsFrom StockMovement[] @relation("FromLocation")
+  stockMovementsTo   StockMovement[] @relation("ToLocation")
+}
+
+model Product {
+  id               String          @id @default(cuid())
+  name             String
+  sku              String          @unique
+  category         String
+  unitCost         Float
+  onHandQty        Int             @default(0)
+  reservedQty      Int             @default(0)
+  reorderThreshold Int             @default(10)
+  warehouseId      String
+  warehouse        Warehouse       @relation(fields: [warehouseId], references: [id])
+  receiptLines     ReceiptLine[]
+  deliveryLines    DeliveryLine[]
+  damageReports    DamageReport[]
+  stockMovements   StockMovement[]
+}
+
+model Receipt {
+  id            String        @id @default(cuid())
+  reference     String        @unique
+  supplierId    String
+  status        String        @default("Draft")
+  scheduledDate DateTime
+  lines         ReceiptLine[]
+  createdBy     String
+  createdAt     DateTime      @default(now())
+}
+
+model ReceiptLine {
+  id        String  @id @default(cuid())
+  receiptId String
+  receipt   Receipt @relation(fields: [receiptId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitCost  Float
+}
+
+model Delivery {
+  id            String         @id @default(cuid())
+  reference     String         @unique
+  customerId    String
+  status        String         @default("Draft")
+  scheduledDate DateTime
+  lines         DeliveryLine[]
+  createdBy     String
+  createdAt     DateTime       @default(now())
+}
+
+model DeliveryLine {
+  id         String   @id @default(cuid())
+  deliveryId String
+  delivery   Delivery @relation(fields: [deliveryId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+}
+
+model StockMovement {
+  id             String    @id @default(cuid())
+  reference      String
+  productId      String
+  product        Product   @relation(fields: [productId], references: [id])
+  type           String
+  quantity       Int
+  fromLocationId String?
+  fromLocation   Location? @relation("FromLocation", fields: [fromLocationId], references: [id])
+  toLocationId   String?
+  toLocation     Location? @relation("ToLocation", fields: [toLocationId], references: [id])
+  doneBy         String
+  createdAt      DateTime  @default(now())
+}
+
+model DamageReport {
+  id          String    @id @default(cuid())
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  quantity    Int
+  reason      String
+  reportedBy  String
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  photoPath   String?
+  status      String    @default("Pending")
+  createdAt   DateTime  @default(now())
+}
+
+model Alert {
+  id         String   @id @default(cuid())
+  type       String
+  message    String
+  severity   String
+  entityType String
+  entityId   String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  userId     String
+  metadata   String
+  createdAt  DateTime @default(now())
+}
