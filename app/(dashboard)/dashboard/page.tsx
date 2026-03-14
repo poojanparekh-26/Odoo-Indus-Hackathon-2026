@@ -1,32 +1,53 @@
 import React from 'react';
 import LowStockBanner from '@/components/dashboard/LowStockBanner';
-
-interface KPICardProps {
-  title: string;
-  value: string | number;
-  description: string;
-}
-
-const KPICard: React.FC<KPICardProps> = ({ title, value, description }) => (
-  <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 rounded-xl shadow-sm transition-all hover:shadow-md">
-    <h3 className="text-sm font-medium text-[var(--text-secondary)]">{title}</h3>
-    <div className="mt-2 flex items-baseline gap-2">
-      <span className="text-3xl font-bold text-[var(--text-primary)]">{value}</span>
-    </div>
-    <p className="mt-1 text-xs text-[var(--text-secondary)]">{description}</p>
-  </div>
-);
+import KPICard from '@/components/dashboard/KPICard';
 
 export default function DashboardPage() {
   const kpis = [
-    { title: "Pending Orders", value: 12, description: "Waitlist for fulfillment" },
-    { title: "Stock Value", value: "$45,210", description: "Current inventory valuation" },
-    { title: "Received Today", value: 4, description: "Incoming warehouse shipments" },
-    { title: "Deliveries Ready", value: 8, description: "Scheduled for customer dispatch" },
+    { 
+      title: "Pending Orders", 
+      value: 12, 
+      description: "Waitlist for fulfillment",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      )
+    },
+    { 
+      title: "Stock Value", 
+      value: "$45,210", 
+      description: "Current inventory valuation",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    { 
+      title: "Received Today", 
+      value: 4, 
+      description: "Incoming warehouse shipments",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="8 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2v-2M16 4h2a2 2 0 012 2v4M16 4v4h4" />
+        </svg>
+      )
+    },
+    { 
+      title: "Deliveries Ready", 
+      value: 8, 
+      description: "Scheduled for customer dispatch",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      )
+    },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--bg-primary)]">
+    <div className="flex flex-col min-h-screen">
       <LowStockBanner />
       
       <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8">
