@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, Bell, User, ChevronRight } from 'lucide-react';
 import GlobalSearch from '../ui/GlobalSearch';
 import { useSession } from 'next-auth/react';
+import ThemeToggle from '../ui/ThemeToggle';
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -47,6 +48,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
         <GlobalSearch />
         
         <div className="flex items-center gap-3 pl-4 border-l border-[var(--border)]">
+          <ThemeToggle />
+
           <button 
             className="relative p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
             aria-label="Notifications"
