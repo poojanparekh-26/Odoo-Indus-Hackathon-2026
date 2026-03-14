@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus, Search, Filter, AlertTriangle, Calendar, User } from 'lucide-react';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { EmptyDamageReportsState } from '@/components/ui/EmptyState';
 import Pagination from '@/components/ui/Pagination';
 import { format } from 'date-fns';
 
@@ -77,29 +78,25 @@ export default async function DamageReportsPage({
         </form>
       </div>
 
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[var(--bg-secondary)] border-b border-[var(--border)] text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Product</th>
-                <th className="px-6 py-4">Qty</th>
-                <th className="px-6 py-4">Reason</th>
-                <th className="px-6 py-4">Reported By</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]">
-              {reports.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-secondary)] italic">
-                    No damage reports found matching your criteria.
-                  </td>
+      {reports.length === 0 ? (
+        <EmptyDamageReportsState />
+      ) : (
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[var(--bg-secondary)] border-b border-[var(--border)] text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                  <th className="px-6 py-4">Date</th>
+                  <th className="px-6 py-4">Product</th>
+                  <th className="px-6 py-4">Qty</th>
+                  <th className="px-6 py-4">Reason</th>
+                  <th className="px-6 py-4">Reported By</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
-              ) : (
-                reports.map((report: any) => (
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {reports.map((report: any) => (
                   <tr key={report.id} className="hover:bg-[var(--bg-secondary)] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
@@ -138,17 +135,16 @@ export default async function DamageReportsPage({
                       </Link>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="p-4 border-t border-[var(--border)] flex justify-end">
+             <PaginationClient page={page} totalPages={totalPages} total={total} />
+          </div>
         </div>
-        
-        {/* Simple URL-based pagination for server component */}
-        <div className="p-4 border-t border-[var(--border)] flex justify-end">
-           <PaginationClient page={page} totalPages={totalPages} total={total} />
-        </div>
-      </div>
+      )}
     </div>
   );
 }

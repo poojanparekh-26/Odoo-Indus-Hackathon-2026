@@ -6,6 +6,7 @@ import ReceiptsTable from '@/components/receipts/ReceiptsTable';
 import ViewToggle from '@/components/operations/ViewToggle';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { EmptyReceiptsState } from '@/components/ui/EmptyState';
 
 interface Receipt {
   id: string;
@@ -58,7 +59,9 @@ const ReceiptsView: React.FC<ReceiptsViewProps> = ({ receipts, paginatedReceipts
         </div>
       </div>
 
-      {view === 'list' ? (
+      {receipts.length === 0 ? (
+        <EmptyReceiptsState />
+      ) : view === 'list' ? (
         <ReceiptsTable 
           receipts={paginatedReceipts.data}
           page={paginatedReceipts.page}

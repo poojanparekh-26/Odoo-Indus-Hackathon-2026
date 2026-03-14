@@ -3,6 +3,7 @@ import { ArrowLeftRight, FileInput, Truck, AlertTriangle, Settings2, Search, Fil
 import DateRangePicker from '@/components/ui/DateRangePicker';
 import { format } from 'date-fns';
 import HistoryPagination from '@/components/move-history/HistoryPagination';
+import { EmptyMovementsState } from '@/components/ui/EmptyState';
 
 async function getMoveHistory(searchParams: { [key: string]: string | string[] | undefined }) {
   const page = searchParams.page || '1';
@@ -115,74 +116,72 @@ export default async function MoveHistoryPage({
         </form>
       </div>
 
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[var(--bg-secondary)] border-b border-[var(--border)] text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                <th className="px-6 py-4">Date & Reference</th>
-                <th className="px-6 py-4">Product</th>
-                <th className="px-6 py-4">Type</th>
-                <th className="px-6 py-4">Route</th>
-                <th className="px-6 py-4 text-right">Quantity</th>
-                <th className="px-6 py-4">Done By</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]">
-              {movements.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[var(--text-secondary)] italic">
-                    No movements recorded for this period.
-                  </td>
-                </tr>
-              ) : (
-                movements.map((move: any) => (
-                  <tr key={move.id} className={`${getRowBorder(move.type)} hover:bg-[var(--bg-secondary)] transition-colors`}>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-[var(--text-primary)]">{move.reference}</div>
-                      <div className="text-[10px] text-[var(--text-secondary)]">
-                        {format(new Date(move.createdAt), 'MMM dd, yyyy HH:mm')}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-[var(--text-primary)]">{move.product.name}</div>
-                      <div className="text-xs text-[var(--text-secondary)]">{move.product.sku}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-primary)]">
-                        {getTypeIcon(move.type)}
-                        {move.type}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1.5">
-                        <span className="truncate max-w-[100px]">{move.fromLocation?.name || 'External'}</span>
-                        <ArrowLeftRight className="h-3 w-3 opacity-50" />
-                        <span className="truncate max-w-[100px]">{move.toLocation?.name || 'External'}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right text-sm font-bold text-[var(--text-primary)]">
-                      {move.type === 'OUT' || move.type === 'DAMAGE' ? '-' : '+'}{move.quantity}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)] flex items-center justify-center text-[10px] text-[var(--brand-primary)] font-bold">
-                          {move.doneBy?.[0] || 'U'}
-                        </div>
-                        <span className="text-xs text-[var(--text-secondary)]">{move.doneBy || 'System'}</span>
-                      </div>
-                    </td>
+      {movements.length === 0 ? (
+        <EmptyMovementsState />
+      ) : (
+        <>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[var(--bg-secondary)] border-b border-[var(--border)] text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <th className="px-6 py-4">Date & Reference</th>
+                    <th className="px-6 py-4">Product</th>
+                    <th className="px-6 py-4">Type</th>
+                    <th className="px-6 py-4">Route</th>
+                    <th className="px-6 py-4 text-right">Quantity</th>
+                    <th className="px-6 py-4">Done By</th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                </thead>
+                <tbody className="divide-y divide-[var(--border)]">
+                  {movements.map((move: any) => (
+                    <tr key={move.id} className={`${getRowBorder(move.type)} hover:bg-[var(--bg-secondary)] transition-colors`}>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-semibold text-[var(--text-primary)]">{move.reference}</div>
+                        <div className="text-[10px] text-[var(--text-secondary)]">
+                          {format(new Date(move.createdAt), 'MMM dd, yyyy HH:mm')}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-[var(--text-primary)]">{move.product.name}</div>
+                        <div className="text-xs text-[var(--text-secondary)]">{move.product.sku}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-primary)]">
+                          {getTypeIcon(move.type)}
+                          {move.type}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1.5">
+                          <span className="truncate max-w-[100px]">{move.fromLocation?.name || 'External'}</span>
+                          <ArrowLeftRight className="h-3 w-3 opacity-50" />
+                          <span className="truncate max-w-[100px]">{move.toLocation?.name || 'External'}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right text-sm font-bold text-[var(--text-primary)]">
+                        {move.type === 'OUT' || move.type === 'DAMAGE' ? '-' : '+'}{move.quantity}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)] flex items-center justify-center text-[10px] text-[var(--brand-primary)] font-bold">
+                            {move.doneBy?.[0] || 'U'}
+                          </div>
+                          <span className="text-xs text-[var(--text-secondary)]">{move.doneBy || 'System'}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-      <div className="mt-4">
-        <HistoryPagination page={page} totalPages={totalPages} total={total} />
-      </div>
+          <div className="mt-4">
+            <HistoryPagination page={page} totalPages={totalPages} total={total} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

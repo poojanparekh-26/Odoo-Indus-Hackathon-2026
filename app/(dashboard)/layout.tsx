@@ -5,6 +5,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import SessionTimeoutModal from '@/components/auth/SessionTimeoutModal';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 
 export default function DashboardLayout({
   children,
@@ -27,7 +28,9 @@ export default function DashboardLayout({
           <OfflineIndicator />
           <SessionTimeoutModal />
           <div className="p-4 md:p-6 lg:p-8">
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </div>
         </main>
       </div>

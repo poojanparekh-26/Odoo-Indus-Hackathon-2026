@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus, Search, Filter } from 'lucide-react';
 import Link from 'next/link';
 import ProductsTable from '@/components/products/ProductsTable';
+import { EmptyProductsState } from '@/components/ui/EmptyState';
 
 async function getProducts(searchParams: { [key: string]: string | string[] | undefined }) {
   const page = searchParams.page || '1';
@@ -109,13 +110,17 @@ export default async function ProductsPage({
         </form>
       </div>
 
-      <ProductsTable
-        products={products}
-        page={page}
-        totalPages={totalPages}
-        total={total}
-        perPage={perPage}
-      />
+      {products.length === 0 ? (
+        <EmptyProductsState />
+      ) : (
+        <ProductsTable
+          products={products}
+          page={page}
+          totalPages={totalPages}
+          total={total}
+          perPage={perPage}
+        />
+      )}
     </div>
   );
 }

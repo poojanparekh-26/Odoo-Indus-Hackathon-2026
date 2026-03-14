@@ -237,7 +237,8 @@ const DamageReportForm: React.FC = () => {
               max={selectedProduct?.availableQty}
             />
             {selectedProduct && quantity > selectedProduct.availableQty && (
-              <div className="absolute right-3 top-3.5 text-red-500 flex items-center gap-1">
+              <div className="absolute right-3 top-3.5 text-red-500 flex items-center gap-2">
+                <span className="text-[10px] font-bold">Exceeds available stock</span>
                 <AlertCircle className="h-4 w-4" />
               </div>
             )}
