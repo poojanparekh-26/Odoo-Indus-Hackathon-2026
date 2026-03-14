@@ -1,50 +1,93 @@
-import React from 'react';
-import { Plus, Search, Filter } from 'lucide-react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { Plus, Search, Filter, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import ProductsTable from '@/components/products/ProductsTable';
 import { EmptyProductsState } from '@/components/ui/EmptyState';
+import { useRouter } from 'next/navigation';
 
-async function getProducts(searchParams: { [key: string]: string | string[] | undefined }) {
-  const page = searchParams.page || '1';
-  const perPage = searchParams.perPage || '10';
-  const category = searchParams.category || '';
-  const sku = searchParams.sku || '';
-
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-  const query = new URLSearchParams({
-    page: page as string,
-    perPage: perPage as string,
-    category: category as string,
-    sku: sku as string,
-  });
-
-  try {
-    const res = await fetch(`${baseUrl}/api/products?${query.toString()}`, {
-      cache: 'no-store',
-      // Pass the cookies if needed, but since it's internal we might need to handle auth
-      // Usually in server components we'd fetch directly from the DB or a service
-      // But follow instructions to use the API URL
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch products: ${res.statusText}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return { data: [], total: 0, page: 1, totalPages: 1 };
-  }
-}
-
-export default async function ProductsPage({
+export default function ProductsPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { data: products, total, totalPages } = await getProducts(searchParams);
+  const router = useRouter();
   const page = parseInt((searchParams.page as string) || '1');
   const perPage = parseInt((searchParams.perPage as string) || '10');
+  const categoryParam = (searchParams.category as string) || '';
+  const skuParam = (searchParams.sku as string) || '';
+
+  const [products, setProducts] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
+    let isMountedLocal = true;
+    setLoading(true);
+
+    const query = new URLSearchParams({
+      page: page.toString(),
+      perPage: perPage.toString(),
+      category: categoryParam,
+      sku: skuParam,
+    });
+
+    fetch(`/api/products?${query.toString()}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch products');
+        return res.json();
+      })
+      .then((data) => {
+        if (isMountedLocal) {
+          setProducts(data.data || []);
+          setTotal(data.total || 0);
+          setTotalPages(data.totalPages || 1);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching products:', err);
+        if (isMountedLocal) {
+          setProducts([]);
+          setTotal(0);
+          setTotalPages(1);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMountedLocal = false;
+    };
+  }, [page, perPage, categoryParam, skuParam, isMounted]);
+
+  const handleFilter = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const category = formData.get('category') as string;
+    const sku = formData.get('sku') as string;
+
+    const query = new URLSearchParams();
+    query.set('page', '1');
+    query.set('perPage', perPage.toString());
+    if (category) query.set('category', category);
+    if (sku) query.set('sku', sku);
+
+    router.push(`/products?${query.toString()}`);
+  };
+
+  // Prevent hydration error (server vs client mismatch)
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -64,7 +107,7 @@ export default async function ProductsPage({
 
       {/* Filter Bar */}
       <div className="bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-xl shadow-sm">
-        <form className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={handleFilter} className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
           <div className="space-y-1.5">
             <label htmlFor="sku" className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
               Search SKU / Name
@@ -74,7 +117,7 @@ export default async function ProductsPage({
                 type="text"
                 id="sku"
                 name="sku"
-                defaultValue={searchParams.sku as string}
+                defaultValue={skuParam}
                 placeholder="SKU-001..."
                 className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
               />
@@ -89,7 +132,7 @@ export default async function ProductsPage({
             <select
               id="category"
               name="category"
-              defaultValue={searchParams.category as string}
+              defaultValue={categoryParam}
               className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] appearance-none"
             >
               <option value="">All Categories</option>
@@ -110,7 +153,11 @@ export default async function ProductsPage({
         </form>
       </div>
 
-      {products.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center py-10">
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--brand-primary)]" />
+        </div>
+      ) : products.length === 0 ? (
         <EmptyProductsState />
       ) : (
         <ProductsTable
