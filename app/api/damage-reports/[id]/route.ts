@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { withRole } from "@/lib/auth/withRole";
 
 export async function GET(
   req: NextRequest,
@@ -31,20 +32,12 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+export const PATCH = withRole(["manager"], async (
   req: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Check if user is a manager (case-insensitive check)
-  const role = (session.user as { role: string }).role?.toUpperCase();
-  if (role !== "MANAGER" && role !== "ADMIN") {
-    return NextResponse.json({ error: "Forbidden: Manager role required" }, { status: 403 });
-  }
+  // Role check is guaranteed by withRole
 
   try {
     const body = await req.json();
@@ -76,4 +69,4 @@ export async function PATCH(
     console.error("[api/damage-reports/[id]] PATCH error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-}
+});

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { withRole } from "@/lib/auth/withRole";
 
 export async function GET(
   req: NextRequest,
@@ -74,14 +75,12 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
+export const DELETE = withRole(["manager"], async (
   req: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // Session is guaranteed by withRole
 
   try {
     const product = await prisma.product.findUnique({
@@ -106,4 +105,4 @@ export async function DELETE(
     console.error("[api/products/[id]] DELETE error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-}
+});

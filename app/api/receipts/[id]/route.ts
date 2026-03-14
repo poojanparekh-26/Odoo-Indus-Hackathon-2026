@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { emitEvent } from "@/lib/socket";
+import { withRole } from "@/lib/auth/withRole";
 
 export async function GET(
   req: NextRequest,
@@ -34,16 +35,14 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+export const PATCH = withRole(["manager"], async (
   req: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const session = (await getServerSession(authOptions)) as {
     user: { id: string };
   } | null;
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // Session is guaranteed by withRole
 
   try {
     const body = await req.json();
@@ -72,10 +71,10 @@ export async function PATCH(
     }
 
     // Atomic transaction for Status Change
-    return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx: any) => {
       const updatedReceipt = await tx.receipt.update({
         where: { id: params.id },
-        data: { status },
+        data: { status: status! },
       });
 
       // Business Logic for status -> Done
@@ -94,7 +93,7 @@ export async function PATCH(
               productId: line.productId,
               type: "IN",
               quantity: line.quantity,
-              doneBy: session.user.id,
+              doneBy: session!.user.id,
             },
           });
         }
@@ -105,7 +104,7 @@ export async function PATCH(
             action: "RECEIPT_DONE",
             entityType: "Receipt",
             entityId: receipt.id,
-            userId: session.user.id,
+            userId: session!.user.id,
             metadata: JSON.stringify({ reference: receipt.reference }),
           },
         });
@@ -120,4 +119,4 @@ export async function PATCH(
     console.error("[api/receipts/[id]] PATCH error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-}
+});

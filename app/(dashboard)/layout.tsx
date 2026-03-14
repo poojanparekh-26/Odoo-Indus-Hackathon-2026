@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
+import SessionTimeoutModal from '@/components/auth/SessionTimeoutModal';
 
 export default function DashboardLayout({
   children,
@@ -24,6 +25,7 @@ export default function DashboardLayout({
         
         <main className="flex-1 overflow-y-auto bg-[var(--bg-secondary)] relative">
           <OfflineIndicator />
+          <SessionTimeoutModal />
           <div className="p-4 md:p-6 lg:p-8">
             {children}
           </div>
