@@ -10,6 +10,9 @@
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --border: #e5e7eb;
+  --brand-primary: #3b82f6;
+  --nav-active-bg: rgba(59, 130, 246, 0.1);
+  --nav-active-text: #2563eb;
 
   /* Badge Colors - Light Mode */
   --badge-draft-bg: #f3f4f6;
@@ -36,6 +39,9 @@
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
   --border: #374151;
+  --brand-primary: #60a5fa;
+  --nav-active-bg: rgba(96, 165, 250, 0.2);
+  --nav-active-text: #93c5fd;
 
   /* Badge Colors - Dark Mode */
   --badge-draft-bg: #374151;
