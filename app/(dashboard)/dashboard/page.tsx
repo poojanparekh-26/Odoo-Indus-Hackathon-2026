@@ -1,48 +1,70 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import LowStockBanner from '@/components/dashboard/LowStockBanner';
 import KPICard from '@/components/dashboard/KPICard';
+import AlertsPanel from '@/components/dashboard/AlertsPanel';
+import { Package, FileInput, Truck, AlertCircle } from 'lucide-react';
 
 export default function DashboardPage() {
+  const [counts, setCounts] = useState({
+    products: 0,
+    receipts: 0,
+    deliveries: 0,
+    lowStock: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCounts() {
+      try {
+        const [prodRes, recRes, delRes, lowRes] = await Promise.all([
+          fetch('/api/products?perPage=1').then(r => r.json()),
+          fetch('/api/receipts?perPage=1').then(r => r.json()),
+          fetch('/api/deliveries?perPage=1').then(r => r.json()),
+          fetch('/api/stock/low').then(r => r.json())
+        ]);
+
+        setCounts({
+          products: prodRes.total || 0,
+          receipts: recRes.total || 0,
+          deliveries: delRes.total || 0,
+          lowStock: lowRes.data?.length || 0
+        });
+      } catch (error) {
+        console.error("Failed to fetch dashboard counts:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCounts();
+  }, []);
+
   const kpis = [
     { 
-      title: "Pending Orders", 
-      value: 12, 
-      description: "Waitlist for fulfillment",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        </svg>
-      )
+      title: "Total Products", 
+      value: loading ? "..." : counts.products, 
+      description: "Unique SKUs in catalog",
+      icon: <Package className="w-5 h-5" />
     },
     { 
-      title: "Stock Value", 
-      value: "$45,210", 
-      description: "Current inventory valuation",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    { 
-      title: "Received Today", 
-      value: 4, 
+      title: "Active Receipts", 
+      value: loading ? "..." : counts.receipts, 
       description: "Incoming warehouse shipments",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2v-2M16 4h2a2 2 0 012 2v4M16 4v4h4" />
-        </svg>
-      )
+      icon: <FileInput className="w-5 h-5" />
     },
     { 
-      title: "Deliveries Ready", 
-      value: 8, 
+      title: "Active Deliveries", 
+      value: loading ? "..." : counts.deliveries, 
       description: "Scheduled for customer dispatch",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      )
+      icon: <Truck className="w-5 h-5" />
+    },
+    { 
+      title: "Low Stock Items", 
+      value: loading ? "..." : counts.lowStock, 
+      description: "Products below threshold",
+      icon: <AlertCircle className="w-5 h-5" />,
+      color: counts.lowStock > 0 ? "text-red-500" : ""
     },
   ];
 
@@ -51,7 +73,7 @@ export default function DashboardPage() {
       <LowStockBanner />
       
       <header>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Inventory Dashboard</h1>
+        <h1 className="text-2xl font-black text-[var(--text-primary)]">Inventory Dashboard</h1>
         <p className="text-[var(--text-secondary)] text-sm">Real-time overview of your warehouse operations.</p>
       </header>
 
@@ -62,11 +84,19 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl h-64 flex items-center justify-center text-[var(--text-secondary)] italic">
-          Stock Movement Trend Placeholder
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl h-80 flex items-center justify-center text-[var(--text-secondary)] italic shadow-sm">
+            Stock Movement Trend Placeholder
+          </div>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl h-80 flex items-center justify-center text-[var(--text-secondary)] italic shadow-sm">
+            Warehouse Distribution Placeholder
+          </div>
         </div>
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl h-64 flex items-center justify-center text-[var(--text-secondary)] italic">
-          Warehouse Distribution Placeholder
+        
+        <div className="lg:col-span-1">
+          <div className="h-[670px]">
+            <AlertsPanel />
+          </div>
         </div>
       </div>
     </div>
