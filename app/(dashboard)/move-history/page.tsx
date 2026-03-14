@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeftRight, FileInput, Truck, AlertTriangle, Settings2, Search, Filter } from 'lucide-react';
+import { ArrowLeftRight, FileInput, Truck, AlertTriangle, Settings2, Search, Filter, ScrollText } from 'lucide-react';
 import DateRangePicker from '@/components/ui/DateRangePicker';
 import { format } from 'date-fns';
 import HistoryPagination from '@/components/move-history/HistoryPagination';
@@ -63,9 +63,19 @@ export default async function MoveHistoryPage({
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Stock Movements</h1>
-        <p className="text-[var(--text-secondary)] text-sm">Full audit log of inventory transfers and adjustments.</p>
+      <header className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Stock Movements</h1>
+          <p className="text-[var(--text-secondary)] text-sm">Full audit log of inventory transfers and adjustments.</p>
+        </div>
+        <a 
+          href={`/api/move-history/export?${new URLSearchParams(Object.entries(searchParams).reduce((acc, [k, v]) => ({ ...acc, [k]: String(v) }), {})).toString()}`}
+          download
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-primary)] rounded-xl font-bold hover:bg-[var(--bg-primary)] hover:border-[var(--brand-primary)] transition-all shadow-sm text-sm"
+        >
+          <ScrollText className="h-4 w-4 text-[var(--brand-primary)]" />
+          <span>Export CSV</span>
+        </a>
       </header>
 
       {/* Filter Bar */}
