@@ -7,7 +7,9 @@ export type StatusBadgeVariant =
   | "Done" 
   | "Cancelled" 
   | "Damaged" 
-  | "Critical";
+  | "Critical"
+  | "At Risk"
+  | "OK";
 
 interface StatusBadgeProps {
   status: StatusBadgeVariant;

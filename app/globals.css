@@ -34,6 +34,10 @@
   --badge-damaged-text: #9a3412;
   --badge-critical-bg: #fee2e2;
   --badge-critical-text: #991b1b;
+  --badge-at-risk-bg: #fef3c7;
+  --badge-at-risk-text: #92400e;
+  --badge-ok-bg: #dcfce7;
+  --badge-ok-text: #166534;
 }
 
 [data-theme="dark"] {
@@ -68,6 +72,10 @@
   --badge-damaged-text: #ffedd5;
   --badge-critical-bg: #991b1b;
   --badge-critical-text: #ffffff;
+  --badge-at-risk-bg: #78350f;
+  --badge-at-risk-text: #fef3c7;
+  --badge-ok-bg: #064e3b;
+  --badge-ok-text: #dcfce7;
 }
 
 body {
