@@ -1,3 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Core Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-card: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --border: #e5e7eb;
+
+  /* Badge Colors - Light Mode */
+  --badge-draft-bg: #f3f4f6;
+  --badge-draft-text: #374151;
+  --badge-waiting-bg: #fef3c7;
+  --badge-waiting-text: #92400e;
+  --badge-ready-bg: #dcfce7;
+  --badge-ready-text: #166534;
+  --badge-done-bg: #dcfce7;
+  --badge-done-text: #166534;
+  --badge-cancelled-bg: #fee2e2;
+  --badge-cancelled-text: #991b1b;
+  --badge-damaged-bg: #ffedd5;
+  --badge-damaged-text: #9a3412;
+  --badge-critical-bg: #fee2e2;
+  --badge-critical-text: #991b1b;
+}
+
+[data-theme="dark"] {
+  /* Core Colors */
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-card: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border: #374151;
+
+  /* Badge Colors - Dark Mode */
+  --badge-draft-bg: #374151;
+  --badge-draft-text: #d1d5db;
+  --badge-waiting-bg: #78350f;
+  --badge-waiting-text: #fef3c7;
+  --badge-ready-bg: #064e3b;
+  --badge-ready-text: #dcfce7;
+  --badge-done-bg: #064e3b;
+  --badge-done-text: #dcfce7;
+  --badge-cancelled-bg: #7f1d1d;
+  --badge-cancelled-text: #fee2e2;
+  --badge-damaged-bg: #7c2d12;
+  --badge-damaged-text: #ffedd5;
+  --badge-critical-bg: #991b1b;
+  --badge-critical-text: #ffffff;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
