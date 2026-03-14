@@ -14,9 +14,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { productId, quantity, reason, warehouseId, reportedBy, photoPath } = body;
+    const { productId, quantity, reason, warehouseId, photoPath } = body;
+    const userId = (session.user as { id: string }).id;
 
-    if (!productId || !quantity || quantity <= 0 || !reason || !warehouseId || !reportedBy) {
+    if (!productId || !quantity || quantity <= 0 || !reason || !warehouseId) {
       return NextResponse.json({ error: "Missing or invalid fields" }, { status: 400 });
     }
 
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
           quantity,
           reason,
           warehouseId,
-          reportedBy,
+          reportedBy: userId,
           photoPath,
           status: "Pending",
         },
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
           type: "DAMAGE",
           productId,
           quantity,
-          doneBy: reportedBy,
+          doneBy: userId,
           fromLocationId: warehouseId, 
         },
       });
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
       quantity,
       reason,
       warehouseId,
-      reportedBy,
+      reportedBy: userId,
       timestamp: new Date().toISOString(),
     });
 
