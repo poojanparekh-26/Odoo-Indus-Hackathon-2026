@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Loader2, Camera, X, CheckCircle2, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAutoSave } from '@/hooks/useAutoSave';
 
 interface Product {
   id: string;
@@ -37,6 +38,27 @@ const DamageReportForm: React.FC = () => {
   
   const searchRef = useRef<HTMLDivElement>(null);
   const [showResults, setShowResults] = useState(false);
+
+  // Auto-save integration
+  const { savedAt, loadDraft, clearDraft } = useAutoSave('damage-report', {
+    selectedProduct,
+    warehouseId,
+    quantity,
+    reason,
+    photo
+  });
+
+  useEffect(() => {
+    const draft = loadDraft();
+    if (draft) {
+      if (draft.selectedProduct) setSelectedProduct(draft.selectedProduct);
+      if (draft.warehouseId) setWarehouseId(draft.warehouseId);
+      if (draft.quantity) setQuantity(draft.quantity);
+      if (draft.reason) setReason(draft.reason);
+      if (draft.photo) setPhoto(draft.photo);
+      toast.success('Restored draft from last session');
+    }
+  }, []);
 
   // Fetch Warehouses
   useEffect(() => {
@@ -112,6 +134,7 @@ const DamageReportForm: React.FC = () => {
         reason,
         warehouseName
       });
+      clearDraft();
       toast.success('Damage report submitted');
     } catch (error: any) {
       toast.error(error.message);
@@ -304,20 +327,27 @@ const DamageReportForm: React.FC = () => {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading || !selectedProduct || quantity <= 0 || quantity > (selectedProduct?.availableQty || 0)}
-        className="w-full bg-[var(--brand-primary)] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Submitting Report...</span>
-          </>
-        ) : (
-          <span>Submit Damage Report</span>
+      <div className="flex flex-col gap-3">
+        {savedAt && (
+          <p className="text-[10px] text-[var(--brand-primary)] italic text-right px-2">
+            Draft saved at {savedAt.toLocaleTimeString()}
+          </p>
         )}
-      </button>
+        <button
+          type="submit"
+          disabled={isLoading || !selectedProduct || quantity <= 0 || quantity > (selectedProduct?.availableQty || 0)}
+          className="w-full bg-[var(--brand-primary)] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Submitting Report...</span>
+            </>
+          ) : (
+            <span>Submit Damage Report</span>
+          )}
+        </button>
+      </div>
     </form>
   );
 };

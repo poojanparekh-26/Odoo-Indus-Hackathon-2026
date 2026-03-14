@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { SWRegistration } from "@/components/providers/SWRegistration";
 
 export const metadata: Metadata = {
   title: "Inventory Management System",
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en" data-theme="light">
       <body>
         <AuthProvider>
+          <SWRegistration />
           <ToastProvider>
             {children}
           </ToastProvider>
