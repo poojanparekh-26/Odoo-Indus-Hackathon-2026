@@ -17,6 +17,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import StatusBadge from '@/components/ui/StatusBadge';
 import ConfirmModal, { useConfirmModal } from '@/components/ui/ConfirmModal';
+import RoleGuard from '@/components/ui/RoleGuard';
 import { format } from 'date-fns';
 
 interface ReceiptLine {
@@ -140,35 +141,43 @@ const ReceiptDetailPage = () => {
           
           {receipt.status === 'Draft' && (
             <>
-              <button 
-                onClick={validateModal.open}
-                className="px-6 py-2 bg-[var(--brand-primary)] text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-blue-500/20 transition-all"
-              >
-                Validate
-              </button>
-              <button 
-                onClick={cancelModal.open}
-                className="px-4 py-2 text-red-500 font-bold text-sm hover:underline"
-              >
-                Cancel
-              </button>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={validateModal.open}
+                  className="px-6 py-2 bg-[var(--brand-primary)] text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-blue-500/20 transition-all"
+                >
+                  Validate
+                </button>
+              </RoleGuard>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={cancelModal.open}
+                  className="px-4 py-2 text-red-500 font-bold text-sm hover:underline"
+                >
+                  Cancel
+                </button>
+              </RoleGuard>
             </>
           )}
 
           {receipt.status === 'Ready' && (
             <>
-              <button 
-                onClick={validateModal.open}
-                className="px-6 py-2 bg-green-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-green-500/20 transition-all"
-              >
-                Validate (Receive Stock)
-              </button>
-              <button 
-                onClick={cancelModal.open}
-                className="px-4 py-2 text-red-500 font-bold text-sm hover:underline"
-              >
-                Cancel
-              </button>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={validateModal.open}
+                  className="px-6 py-2 bg-green-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-green-500/20 transition-all"
+                >
+                  Validate (Receive Stock)
+                </button>
+              </RoleGuard>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={cancelModal.open}
+                  className="px-4 py-2 text-red-500 font-bold text-sm hover:underline"
+                >
+                  Cancel
+                </button>
+              </RoleGuard>
             </>
           )}
         </div>

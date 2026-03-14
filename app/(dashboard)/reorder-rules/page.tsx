@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Loader2, Edit2, Check, X, AlertTriangle, ArrowRight } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
+import RoleGuard from '@/components/ui/RoleGuard';
 import toast from 'react-hot-toast';
 
 interface Product {
@@ -162,45 +163,47 @@ const ReorderRulesPage = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          {editingId === product.id ? (
-                            <div className="flex items-center gap-2">
-                              <input
-                                autoFocus
-                                type="number"
-                                className="w-20 bg-[var(--bg-primary)] border border-[var(--brand-primary)] rounded px-2 py-1 text-sm font-bold focus:outline-none"
-                                value={editValue}
-                                onChange={(e) => setEditValue(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') handleUpdateThreshold(product.id);
-                                  if (e.key === 'Escape') setEditingId(null);
+                          <RoleGuard allowedRoles={['manager']}>
+                            {editingId === product.id ? (
+                              <div className="flex items-center gap-2">
+                                <input
+                                  autoFocus
+                                  type="number"
+                                  className="w-20 bg-[var(--bg-primary)] border border-[var(--brand-primary)] rounded px-2 py-1 text-sm font-bold focus:outline-none"
+                                  value={editValue}
+                                  onChange={(e) => setEditValue(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleUpdateThreshold(product.id);
+                                    if (e.key === 'Escape') setEditingId(null);
+                                  }}
+                                />
+                                <button 
+                                  onClick={() => handleUpdateThreshold(product.id)}
+                                  disabled={isUpdating}
+                                  className="p-1 text-green-600 hover:bg-green-50 rounded"
+                                >
+                                  {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                                </button>
+                                <button 
+                                  onClick={() => setEditingId(null)}
+                                  className="p-1 text-red-500 hover:bg-red-50 rounded"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div 
+                                className="flex items-center gap-2 group/edit cursor-pointer"
+                                onClick={() => {
+                                  setEditingId(product.id);
+                                  setEditValue(product.reorderThreshold.toString());
                                 }}
-                              />
-                              <button 
-                                onClick={() => handleUpdateThreshold(product.id)}
-                                disabled={isUpdating}
-                                className="p-1 text-green-600 hover:bg-green-50 rounded"
                               >
-                                {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                              </button>
-                              <button 
-                                onClick={() => setEditingId(null)}
-                                className="p-1 text-red-500 hover:bg-red-50 rounded"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            </div>
-                          ) : (
-                            <div 
-                              className="flex items-center gap-2 group/edit cursor-pointer"
-                              onClick={() => {
-                                setEditingId(product.id);
-                                setEditValue(product.reorderThreshold.toString());
-                              }}
-                            >
-                              <span className="text-sm font-bold">{product.reorderThreshold}</span>
-                              <Edit2 className="h-3 w-3 text-[var(--text-secondary)] opacity-0 group-hover/edit:opacity-100 transition-opacity" />
-                            </div>
-                          )}
+                                <span className="text-sm font-bold">{product.reorderThreshold}</span>
+                                <Edit2 className="h-3 w-3 text-[var(--text-secondary)] opacity-0 group-hover/edit:opacity-100 transition-opacity" />
+                              </div>
+                            )}
+                          </RoleGuard>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">

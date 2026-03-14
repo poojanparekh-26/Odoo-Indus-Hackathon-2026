@@ -5,6 +5,7 @@ import { Plus, Search, Filter, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import ProductsTable from '@/components/products/ProductsTable';
 import { EmptyProductsState } from '@/components/ui/EmptyState';
+import RoleGuard from '@/components/ui/RoleGuard';
 import { useRouter } from 'next/navigation';
 
 export default function ProductsPage({
@@ -96,13 +97,15 @@ export default function ProductsPage({
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Products</h1>
           <p className="text-[var(--text-secondary)] text-sm">Manage your inventory items and stock levels.</p>
         </div>
-        <Link
-          href="/products/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--brand-primary)] text-white rounded-xl font-semibold shadow-sm hover:bg-blue-600 transition-all text-sm w-fit"
-        >
-          <Plus className="h-4 w-4" />
-          <span>New Product</span>
-        </Link>
+        <RoleGuard allowedRoles={['manager']}>
+          <Link
+            href="/products/new"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--brand-primary)] text-white rounded-xl font-semibold shadow-sm hover:bg-blue-600 transition-all text-sm w-fit"
+          >
+            <Plus className="h-4 w-4" />
+            <span>New Product</span>
+          </Link>
+        </RoleGuard>
       </div>
 
       {/* Filter Bar */}

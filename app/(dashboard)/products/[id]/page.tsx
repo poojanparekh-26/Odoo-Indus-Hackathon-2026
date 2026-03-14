@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
+import RoleGuard from '@/components/ui/RoleGuard';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -135,14 +136,18 @@ const ProductDetailPage = () => {
           </div>
         </div>
         <div className="flex gap-3">
-           <button className="px-4 py-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--bg-secondary)] transition-all shadow-sm">
-              <Edit3 className="h-4 w-4" />
-              Edit Details
-           </button>
-           <button className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg hover:shadow-blue-500/20 transition-all">
-              <ShoppingBag className="h-4 w-4" />
-              Source More
-           </button>
+           <RoleGuard allowedRoles={['manager']}>
+             <button className="px-4 py-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--bg-secondary)] transition-all shadow-sm">
+                <Edit3 className="h-4 w-4" />
+                Edit Details
+             </button>
+           </RoleGuard>
+           <RoleGuard allowedRoles={['manager']}>
+             <button className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg hover:shadow-blue-500/20 transition-all">
+                <ShoppingBag className="h-4 w-4" />
+                Source More
+             </button>
+           </RoleGuard>
         </div>
       </div>
 

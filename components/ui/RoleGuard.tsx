@@ -1,36 +1,42 @@
 'use client';
-
-import React, { ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
+import React from 'react';
 
 interface RoleGuardProps {
   allowedRoles: string[];
+  children: React.ReactNode;
   tooltip?: string;
-  children: ReactNode;
 }
 
-const RoleGuard: React.FC<RoleGuardProps> = ({ 
+export default function RoleGuard({ 
   allowedRoles, 
-  tooltip = "Manager access required", 
-  children 
-}) => {
-  const { data: session } = useSession();
-
-  const userRole = (session?.user as { role: string })?.role;
-  const isAllowed = userRole && allowedRoles.includes(userRole);
-
-  if (!isAllowed) {
+  children, 
+  tooltip = "Manager access required" 
+}: RoleGuardProps) {
+  const { data: session, status } = useSession();
+  
+  if (status === "loading") return <>{children}</>;
+  
+  const role = (session?.user as any)?.role || "staff";
+  const hasAccess = allowedRoles.includes(role);
+  
+  if (!hasAccess) {
     return (
       <div 
-        className="opacity-50 pointer-events-none cursor-not-allowed filter grayscale-[0.5]" 
+        className="relative group cursor-not-allowed"
         title={tooltip}
       >
-        {children}
+        <div className="pointer-events-none opacity-40 select-none">
+          {children}
+        </div>
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
+          hidden group-hover:block bg-gray-800 text-white text-xs 
+          rounded-lg px-3 py-1.5 whitespace-nowrap z-50 shadow-lg">
+          {tooltip}
+        </div>
       </div>
     );
   }
-
+  
   return <>{children}</>;
-};
-
-export default RoleGuard;
+}

@@ -19,6 +19,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import StatusBadge from '@/components/ui/StatusBadge';
 import ConfirmModal, { useConfirmModal } from '@/components/ui/ConfirmModal';
+import RoleGuard from '@/components/ui/RoleGuard';
 import { format } from 'date-fns';
 
 interface DeliveryLine {
@@ -151,38 +152,50 @@ const DeliveryDetailPage = () => {
           
           {delivery.status === 'Draft' && (
             <>
-              <button 
-                onClick={() => openActionModal('Waiting')}
-                className="px-6 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-blue-500/20 transition-all"
-              >
-                Confirm
-              </button>
-              <button onClick={cancelModal.open} className="px-4 py-2 text-red-500 font-bold text-sm hover:underline">Cancel</button>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={() => openActionModal('Waiting')}
+                  className="px-6 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-blue-500/20 transition-all"
+                >
+                  Confirm
+                </button>
+              </RoleGuard>
+              <RoleGuard allowedRoles={['manager']}>
+                <button onClick={cancelModal.open} className="px-4 py-2 text-red-500 font-bold text-sm hover:underline">Cancel</button>
+              </RoleGuard>
             </>
           )}
 
           {delivery.status === 'Waiting' && (
             <>
-              <button 
-                onClick={() => openActionModal('Ready')}
-                disabled={!canReserveAll}
-                className="px-6 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-indigo-500/20 transition-all disabled:opacity-50"
-              >
-                Mark Ready (Reserve)
-              </button>
-              <button onClick={cancelModal.open} className="px-4 py-2 text-red-500 font-bold text-sm hover:underline">Cancel</button>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={() => openActionModal('Ready')}
+                  disabled={!canReserveAll}
+                  className="px-6 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-indigo-500/20 transition-all disabled:opacity-50"
+                >
+                  Mark Ready (Reserve)
+                </button>
+              </RoleGuard>
+              <RoleGuard allowedRoles={['manager']}>
+                <button onClick={cancelModal.open} className="px-4 py-2 text-red-500 font-bold text-sm hover:underline">Cancel</button>
+              </RoleGuard>
             </>
           )}
 
           {delivery.status === 'Ready' && (
             <>
-              <button 
-                onClick={() => openActionModal('Done')}
-                className="px-6 py-2 bg-green-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-green-500/20 transition-all"
-              >
-                Validate (Ship)
-              </button>
-              <button onClick={cancelModal.open} className="px-4 py-2 text-red-500 font-bold text-sm hover:underline">Cancel</button>
+              <RoleGuard allowedRoles={['manager']}>
+                <button 
+                  onClick={() => openActionModal('Done')}
+                  className="px-6 py-2 bg-green-500 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-green-500/20 transition-all"
+                >
+                  Validate (Ship)
+                </button>
+              </RoleGuard>
+              <RoleGuard allowedRoles={['manager']}>
+                <button onClick={cancelModal.open} className="px-4 py-2 text-red-500 font-bold text-sm hover:underline">Cancel</button>
+              </RoleGuard>
             </>
           )}
         </div>

@@ -5,6 +5,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import InlineStockEdit from '@/components/stock/InlineStockEdit';
 import { Search, Filter, ArrowUpDown, Package, Info } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import RoleGuard from '@/components/ui/RoleGuard';
 
 interface Product {
   id: string;
@@ -140,11 +141,13 @@ export default function StockPage() {
                       ₹{product.unitCost.toLocaleString()}
                     </td>
                     <td className="px-6 py-4">
-                      <InlineStockEdit 
-                        productId={product.id} 
-                        currentValue={product.onHandQty} 
-                        onUpdated={(val) => handleStockUpdated(product.id, val)}
-                      />
+                      <RoleGuard allowedRoles={['manager']}>
+                        <InlineStockEdit 
+                          productId={product.id} 
+                          currentValue={product.onHandQty} 
+                          onUpdated={(val) => handleStockUpdated(product.id, val)}
+                        />
+                      </RoleGuard>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className="text-sm font-medium text-[var(--text-secondary)]">
