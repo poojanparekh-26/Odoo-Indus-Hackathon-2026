@@ -101,6 +101,7 @@ export default function NewDeliveryPage() {
       clearDraft();
       toast.success('Delivery created successfully');
       router.push('/deliveries');
+      router.refresh();
     } catch (err: any) {
       toast.error(err.message);
     } finally {

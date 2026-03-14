@@ -85,6 +85,7 @@ export default function NewReceiptPage() {
 
       clearDraft();
       toast.success('Receipt created successfully');
+      router.refresh();
       router.push('/receipts');
     } catch (err: any) {
       toast.error(err.message);

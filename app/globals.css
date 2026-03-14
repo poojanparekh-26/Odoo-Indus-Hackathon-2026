@@ -7,6 +7,9 @@
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --bg-card: #ffffff;
+  --card-bg: #ffffff;
+  --input-bg: #f9fafb;
+  --border-color: #e5e7eb;
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --border: #e5e7eb;
@@ -48,6 +51,9 @@
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
   --bg-card: #1f2937;
+  --card-bg: #1f2937;
+  --input-bg: #374151;
+  --border-color: #374151;
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
   --border: #374151;

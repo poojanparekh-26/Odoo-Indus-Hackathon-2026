@@ -127,6 +127,7 @@ export async function GET(req: NextRequest) {
   try {
     const result = await getPaginatedData(prisma.damageReport, page, perPage, where, {
       product: { select: { name: true, sku: true } },
+      user: { select: { name: true } },
     });
     return NextResponse.json(result);
   } catch (error) {
