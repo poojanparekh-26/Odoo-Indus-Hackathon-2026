@@ -45,7 +45,7 @@ interface Receipt {
 const ReceiptDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [receipt, setReceipt] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -93,7 +93,21 @@ const ReceiptDetailPage = () => {
     }
   };
 
-  if (isLoading) {
+  if (error) {
+    return (
+      <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
+        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center">
+          <AlertCircle className="h-10 w-10" />
+        </div>
+        <p className="text-xl font-bold text-[var(--text-primary)]">{error}</p>
+        <Link href="/receipts" className="text-[var(--brand-primary)] font-semibold hover:underline">
+          Back to Receipts
+        </Link>
+      </div>
+    );
+  }
+
+  if (isLoading || !receipt) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4 text-[var(--text-secondary)]">
         <Loader2 className="h-10 w-10 animate-spin text-[var(--brand-primary)]" />
@@ -102,21 +116,7 @@ const ReceiptDetailPage = () => {
     );
   }
 
-  if (error || !receipt) {
-    return (
-      <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center">
-          <AlertCircle className="h-10 w-10" />
-        </div>
-        <p className="text-xl font-bold text-[var(--text-primary)]">{error || 'Receipt not found'}</p>
-        <Link href="/receipts" className="text-[var(--brand-primary)] font-semibold hover:underline">
-          Back to Receipts
-        </Link>
-      </div>
-    );
-  }
-
-  const totalCost = receipt.lines.reduce((acc, line) => acc + (line.quantity * line.unitCost), 0);
+  const totalCost = (receipt.lines || []).reduce((acc: number, line: any) => acc + (line.quantity * line.unitCost), 0);
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-20">
@@ -212,7 +212,7 @@ const ReceiptDetailPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
-                  {receipt.lines.map((line) => (
+                  {(receipt.lines || []).map((line: any) => (
                     <tr key={line.id} className="text-sm">
                       <td className="py-4 font-semibold text-[var(--text-primary)]">{line.product.name}</td>
                       <td className="py-4 text-[var(--text-secondary)] font-mono">{line.product.sku}</td>
