@@ -18,6 +18,9 @@ model User {
   role         String    @default("staff")
   sessions     Session[]
   createdAt    DateTime  @default(now())
+  stockMovements StockMovement[]
+  auditLogs      AuditLog[]
+  damageReports  DamageReport[]
 }
 
 model Session {
@@ -117,6 +120,7 @@ model StockMovement {
   toLocationId   String?
   toLocation     Location? @relation("ToLocation", fields: [toLocationId], references: [id])
   doneBy         String
+  user           User      @relation(fields: [doneBy], references: [id])
   createdAt      DateTime  @default(now())
 }
 
@@ -127,6 +131,7 @@ model DamageReport {
   quantity    Int
   reason      String
   reportedBy  String
+  user        User      @relation(fields: [reportedBy], references: [id])
   warehouseId String
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
   photoPath   String?
@@ -151,6 +156,7 @@ model AuditLog {
   entityType String
   entityId   String
   userId     String
+  user       User     @relation(fields: [userId], references: [id])
   metadata   String
   createdAt  DateTime @default(now())
 }
